@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RelayController.API", "src\RelayController.API\RelayController.API.csproj", "{57088779-38E9-45EA-AC5F-48596EEFFE61}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RelayController.Domain", "src\RelayController.Domain\RelayController.Domain.csproj", "{E0DE4F52-B7E5-4F24-BB14-45B6548121E0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RelayController.Infrastructure", "src\RelayController.Infrastructure\RelayController.Infrastructure.csproj", "{7EF6AA18-C692-4841-8E3A-975187B2AD79}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RelayController.Application", "src\RelayController.Application\RelayController.Application.csproj", "{188BD301-12D7-43BC-926F-848B3A7ED493}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{57088779-38E9-45EA-AC5F-48596EEFFE61}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{57088779-38E9-45EA-AC5F-48596EEFFE61}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{57088779-38E9-45EA-AC5F-48596EEFFE61}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{57088779-38E9-45EA-AC5F-48596EEFFE61}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E0DE4F52-B7E5-4F24-BB14-45B6548121E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E0DE4F52-B7E5-4F24-BB14-45B6548121E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E0DE4F52-B7E5-4F24-BB14-45B6548121E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E0DE4F52-B7E5-4F24-BB14-45B6548121E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7EF6AA18-C692-4841-8E3A-975187B2AD79}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7EF6AA18-C692-4841-8E3A-975187B2AD79}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7EF6AA18-C692-4841-8E3A-975187B2AD79}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7EF6AA18-C692-4841-8E3A-975187B2AD79}.Release|Any CPU.Build.0 = Release|Any CPU
+		{188BD301-12D7-43BC-926F-848B3A7ED493}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{188BD301-12D7-43BC-926F-848B3A7ED493}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{188BD301-12D7-43BC-926F-848B3A7ED493}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{188BD301-12D7-43BC-926F-848B3A7ED493}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
