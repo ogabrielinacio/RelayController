@@ -4,7 +4,7 @@ using RelayController.Domain.ValueObjects;
 
 namespace RelayController.Domain.Aggregates.RelayControllerAggregates;
 
-public class RelayController : AuditableEntity, IAggregateRoot
+public class RelayControllerBoard : AuditableEntity, IAggregateRoot
 {
     public bool IsActive { get; private set; }
     public bool IsEnable { get; private set; }
@@ -14,9 +14,9 @@ public class RelayController : AuditableEntity, IAggregateRoot
     public DayOfWeek? DayOfWeek { get; private set; }
     public int? DayOfMonth { get; private set; }
     
-    protected RelayController() { }
+    protected RelayControllerBoard() { }
     
-    public RelayController(bool isActive, bool isEnable, DateTime startTime, Repeat repeat, DateTime? endTime)
+    public RelayControllerBoard(bool isActive, bool isEnable, DateTime startTime, Repeat repeat, DateTime? endTime)
     {
         IsActive = isActive;
 
