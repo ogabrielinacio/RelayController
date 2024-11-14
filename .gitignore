@@ -5,6 +5,8 @@ project.lock.json
 *.pyc
 nupkg/
 
+**/appsettings.json
+
 # Visual Studio Code
 .vscode/
 
@@ -25,6 +27,8 @@ nupkg/
 *.user
 *.userosscache
 *.sln.docstates
+*.sln.DotSettings
+*.sln.DotSettings.user
 
 # Build results
 [Dd]ebug/
