@@ -11,4 +11,9 @@
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\RelayController.Application\RelayController.Application.csproj" />
+      <ProjectReference Include="..\RelayController.Infrastructure\RelayController.Infrastructure.csproj" />
+    </ItemGroup>
+
 </Project>

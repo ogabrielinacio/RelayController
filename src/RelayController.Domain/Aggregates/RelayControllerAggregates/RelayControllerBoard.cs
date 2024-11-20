@@ -77,6 +77,7 @@ public class RelayControllerBoard : AuditableEntity, IAggregateRoot
 
             case Repeat.DoNoRepeat:
             default:
+                StartTime = new Time(startTime.Hour, startTime.Minute, startTime.Second);
                 break;
         }
     }
