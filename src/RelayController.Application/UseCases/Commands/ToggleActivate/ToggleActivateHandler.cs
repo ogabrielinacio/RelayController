@@ -2,10 +2,11 @@
 using RelayController.Domain.Common;
 using RelayController.Domain.Exceptions;
 using MediatR;
+using RelayController.Domain.Messaging;
 
 namespace RelayController.Application.UseCases.Commands.ToggleActivate;
 
-public class ToggleActivateHandler(IRelayControllerBoardRepository relayControllerBoardRepository, IUnitOfWork unitOfWork) : IRequestHandler<ToggleActivateCommand>
+public class ToggleActivateHandler(IRelayControllerBoardRepository relayControllerBoardRepository, IUnitOfWork unitOfWork, IMessageBusService _messageBus) : IRequestHandler<ToggleActivateCommand>
 {
     public async Task Handle(ToggleActivateCommand command, CancellationToken cancellationToken)
     {
@@ -19,10 +20,7 @@ public class ToggleActivateHandler(IRelayControllerBoardRepository relayControll
         else
         {
             relayControllerBoard.Deactivate();
-            if (relayControllerBoard.IsEnable)
-            {
-                //TODO: mqtt Turn Off
-            }
+            relayControllerBoard.Disable();
         }
         
         relayControllerBoardRepository.Update(relayControllerBoard, cancellationToken);

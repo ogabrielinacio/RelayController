@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using RelayController.Application.UseCases.Commands.ToggleEnable;
 using RelayController.Domain.Aggregates.RelayControllerAggregates;
+using RelayController.Domain.Messaging;
 
 namespace RelayController.Infrastructure.BackgroundServices;
 

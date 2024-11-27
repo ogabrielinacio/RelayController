@@ -23,20 +23,13 @@ public class BoardController(ISender sender) : Controller
         return Ok(response);
     }
     
-    [HttpPost]
-    public async Task<IActionResult> CreateAsync([FromBody] CreateRelayControllerBoardCommand command, CancellationToken cancellationToken)
-    {
-        var response = await sender.Send(command, cancellationToken);
-        return Ok(response);
-    }
-
     [HttpPost("{id:guid}/enable")]
     public async Task<IActionResult> EnableAsync([FromRoute] Guid id, CancellationToken cancellationToken)
     {
         var command = new ToggleEnableCommand
         {
             Id = id,
-            IsEnable = false
+            IsEnable = true 
         };
         await sender.Send(command, cancellationToken);
         return Ok();
@@ -50,32 +43,6 @@ public class BoardController(ISender sender) : Controller
             Id = id,
             IsEnable = false
         };
-        await sender.Send(command, cancellationToken);
-        return Ok();
-    }
-    
-    [HttpPost("{id:guid}/activate")]
-    public async Task<IActionResult> ActivateAsync([FromRoute] Guid id, CancellationToken cancellationToken)
-    {
-        var command = new ToggleActivateCommand()
-        {
-            Id = id,
-            IsActive = false
-        };
-        
-        await sender.Send(command, cancellationToken);
-        return Ok();
-    }
-
-    [HttpPost("{id:guid}/deactivate")]
-    public async Task<IActionResult> DeactivateAsync([FromRoute] Guid id, CancellationToken cancellationToken)
-    {
-        var command = new ToggleActivateCommand
-        {
-            Id = id,
-            IsActive = false
-        };
-        
         await sender.Send(command, cancellationToken);
         return Ok();
     }

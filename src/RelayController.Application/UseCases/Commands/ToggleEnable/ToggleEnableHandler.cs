@@ -2,10 +2,11 @@
 using RelayController.Domain.Common;
 using RelayController.Domain.Exceptions;
 using MediatR;
+using RelayController.Domain.Messaging;
 
 namespace RelayController.Application.UseCases.Commands.ToggleEnable;
 
-public class ToggleEnableHandler(IRelayControllerBoardRepository relayControllerBoardRepository, IUnitOfWork unitOfWork) : IRequestHandler<ToggleEnableCommand>
+public class ToggleEnableHandler(IRelayControllerBoardRepository relayControllerBoardRepository, IUnitOfWork unitOfWork, IMessageBusService _messageBus) : IRequestHandler<ToggleEnableCommand>
 {
     public async Task Handle(ToggleEnableCommand command, CancellationToken cancellationToken)
     {
@@ -21,8 +22,7 @@ public class ToggleEnableHandler(IRelayControllerBoardRepository relayController
             relayControllerBoard.Disable();
         }
         
-
-        //TODO:  mqtt  command.IsEnable
+        _messageBus.Publish(command, "relay.data");
         
         relayControllerBoardRepository.Update(relayControllerBoard, cancellationToken);
         await unitOfWork.CommitAsync(cancellationToken);
