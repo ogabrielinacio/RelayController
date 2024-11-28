@@ -31,7 +31,7 @@ public static class DependencyInjection
             if (efConfiguration.EnableSensitiveDataLogging)
                 options.EnableSensitiveDataLogging();
         });
-
+        
         return services;
     }
     public static void RunMigrations(IServiceProvider serviceProvider, IConfiguration configuration)

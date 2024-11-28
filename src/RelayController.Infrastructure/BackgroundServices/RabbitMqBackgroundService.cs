@@ -26,7 +26,7 @@ public class RabbitMqBackgroundService: BackgroundService
     
     protected override async Task ExecuteAsync(CancellationToken cancellationToken)
     {
-        _messageBus.Subscribe("relay.create", async message =>
+        await _messageBus.Subscribe("relay.create", async message =>
         {
             if (message.Equals("create"))
             {
@@ -43,7 +43,7 @@ public class RabbitMqBackgroundService: BackgroundService
                     using var scope = _serviceProvider.CreateScope();
                     var sender = scope.ServiceProvider.GetRequiredService<ISender>();
                     var response = await sender.Send(command, cancellationToken);
-                    _messageBus.Publish(response,"relay.create");
+                    await _messageBus.Publish(response,"relay.create");
                 }
                 catch (Exception ex)
                 {
@@ -54,7 +54,7 @@ public class RabbitMqBackgroundService: BackgroundService
         
         Dictionary<Guid, DateTime> _lastUpdates = new();
       
-        _messageBus.Subscribe("relay.live", async message =>
+        await _messageBus.Subscribe("relay.live", async message =>
         {
             var options = new JsonSerializerOptions
             {
