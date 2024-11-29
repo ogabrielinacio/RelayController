@@ -10,7 +10,7 @@ public class RabbitMqService : IMessageBusService
 {
     private readonly RabbitMqConnection _rabbitMqConnection;
     private readonly string _exchangeName = "amq.topic";
-    private IChannel _channel;
+    private IChannel? _channel;
 
     public RabbitMqService (RabbitMqConnection rabbitMqConnection) {
         _rabbitMqConnection = rabbitMqConnection;
