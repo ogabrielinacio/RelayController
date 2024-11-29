@@ -32,12 +32,15 @@ public static class DependencyInjection
                 options.EnableSensitiveDataLogging();
         });
         
+        var serviceProvider = services.BuildServiceProvider();
+        RunMigrations(serviceProvider, configuration);
+        
         return services;
     }
     public static void RunMigrations(IServiceProvider serviceProvider, IConfiguration configuration)
     {
-        var efConfiguration = configuration.GetRequiredSection(nameof(EfCoreConfiguration)).Get<EfCoreConfiguration>()!;
-        if (!efConfiguration.RunMigrations) return;
+        var efConfiguration = configuration.GetRequiredSection(nameof(EfCoreConfiguration)).Get<EfCoreConfiguration>();
+        if (efConfiguration is null || !efConfiguration.RunMigrations) return;
         using var scope = serviceProvider.CreateScope();
         var dbContext = scope.ServiceProvider.GetService<RelayControllerContext>()!;
         dbContext.Database.Migrate();
