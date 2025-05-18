@@ -1,6 +1,6 @@
 ﻿namespace RelayController.Application.Common.Enums;
 
-public enum RepeatDTO
+public enum RepeatDto
 {
     DoNoRepeat, 
     Daily,

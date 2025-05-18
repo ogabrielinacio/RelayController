@@ -3,9 +3,9 @@ using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using RelayController.Application.Common.Enums;
-using RelayController.Application.UseCases.Commands.CreateRelayControllerBoard;
-using RelayController.Application.UseCases.Commands.ToggleActivate;
-using RelayController.Application.UseCases.Commands.ToggleEnable;
+using RelayController.Application.UseCases.Commands.BoardCommands.CreateRelayControllerBoard;
+using RelayController.Application.UseCases.Commands.BoardCommands.ToggleActivate;
+using RelayController.Application.UseCases.Commands.BoardCommands.ToggleEnable;
 using RelayController.Application.UseCases.Queries.GetRelayControllerBoard;
 using RelayController.Domain.Aggregates.RelayControllerAggregates;
 using RelayController.Domain.Messaging;
@@ -36,7 +36,7 @@ public class RabbitMqBackgroundService: BackgroundService
                     IsEnable = true,
                     StartTime = DateTime.Now,
                     EndTime = null,
-                    Repeat = RepeatDTO.DoNoRepeat
+                    Repeat = RepeatDto.DoNoRepeat
                 };
                 try
                 {

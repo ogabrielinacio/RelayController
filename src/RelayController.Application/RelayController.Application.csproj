@@ -23,4 +23,8 @@
       <ProjectReference Include="..\RelayController.Domain\RelayController.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="UseCases\Commands\BoardCommands\" />
+    </ItemGroup>
+
 </Project>

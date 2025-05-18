@@ -12,7 +12,7 @@ public sealed class GetRelayControllerBoardResponse
     public bool IsEnable { get; init; }
     public string StartTime { get; init; } = null!;
     public string? EndTime { get; init; }
-    public RepeatDTO Repeat { get; init; }
+    public RepeatDto Repeat { get; init; }
     public DayOfWeek? DayOfWeek { get; init; }
     public int? DayOfMonth { get; init; }
 }
