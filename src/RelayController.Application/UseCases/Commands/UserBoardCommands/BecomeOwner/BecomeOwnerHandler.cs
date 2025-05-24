@@ -10,9 +10,17 @@ public class BecomeOwnerHandler(IUserBoardsRolesRepository userBoardsRolesReposi
 {
     public async Task<bool> Handle(BecomeOwnerCommand command, CancellationToken cancellationToken)
     {
+        var alreadyHasAOwner = await  userBoardsRolesRepository.AlreadyHasAOwner(command.BoardId, cancellationToken);
+
+        if (alreadyHasAOwner)
+        {
+            throw new InvalidOperationException($"Board with Id {command.BoardId} already has a Owner");
+        }
+        
         var role = new UserBoardsRoles { 
             UserId = command.UserId,
             RelayControllerBoardId = command.BoardId,
+            CustomName = command.CustomName,
             Role = Role.Owner
         };
 

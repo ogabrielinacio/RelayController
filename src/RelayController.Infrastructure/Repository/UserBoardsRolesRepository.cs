@@ -29,6 +29,14 @@ public class UserBoardsRolesRepository : IUserBoardsRolesRepository
             cancellationToken);
     }
     
+    public async Task<bool> AlreadyHasAOwner(Guid boardId, CancellationToken cancellationToken)
+    {
+        return await _context.UserBoardsRoles.AnyAsync(r =>
+                r.RelayControllerBoardId == boardId  &&
+                r.Role.Id == Role.Owner.Id,
+            cancellationToken);
+    }
+    
     public async Task<bool> HasAnyPermission(Guid userId, Guid boardId, CancellationToken cancellationToken)
     {
         return await _context.UserBoardsRoles.AnyAsync(r =>

@@ -7,5 +7,8 @@ public sealed class UserBoardsRoles : AuditableEntity
 {
     public Guid UserId { get; set; }
     public Guid RelayControllerBoardId { get; set; }
+    
+    public string CustomName { get; set; } = string.Empty;
+
     public Role Role { get; set; }
 }

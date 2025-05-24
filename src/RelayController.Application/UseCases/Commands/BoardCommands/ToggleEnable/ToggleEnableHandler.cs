@@ -22,7 +22,7 @@ public class ToggleEnableHandler(IRelayControllerBoardRepository relayController
             relayControllerBoard.Disable();
         }
         
-        _messageBus.Publish(command, "relay.data");
+        await _messageBus.Publish(command, "relay.data");
         
         relayControllerBoardRepository.Update(relayControllerBoard, cancellationToken);
         await unitOfWork.CommitAsync(cancellationToken);

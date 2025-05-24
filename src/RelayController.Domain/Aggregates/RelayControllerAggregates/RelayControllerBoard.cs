@@ -59,6 +59,9 @@ public class RelayControllerBoard : AuditableEntity, IAggregateRoot
         {
             var datetime = (DateTime)endTime;
             EndTime = new Time(datetime.Hour, datetime.Minute, datetime.Second);
+        } else
+        {
+            EndTime = null;
         }
 
         switch (repeat)
@@ -78,6 +81,8 @@ public class RelayControllerBoard : AuditableEntity, IAggregateRoot
             case Repeat.DoNoRepeat:
             default:
                 StartTime = new Time(startTime.Hour, startTime.Minute, startTime.Second);
+                DayOfWeek = null;
+                DayOfMonth = null;
                 break;
         }
     }

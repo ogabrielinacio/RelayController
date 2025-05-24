@@ -1,9 +1,8 @@
 using MediatR;
-using RelayController.Application.UseCases.Commands.UserBoardCommands.BecomeOwner;
 using RelayController.Domain.Aggregates.UserAggregates;
 using RelayController.Domain.Common;
 
-namespace RelayController.Application.UseCases.Queries.UserBoardQueries;
+namespace RelayController.Application.UseCases.Queries.UserBoardQueries.HasPermission;
 
 public class HasPermissionHandler(IUserBoardsRolesRepository userBoardsRolesRepository, IUnitOfWork unitOfWork) : IRequestHandler<HasPermissionQuery, bool>
 {

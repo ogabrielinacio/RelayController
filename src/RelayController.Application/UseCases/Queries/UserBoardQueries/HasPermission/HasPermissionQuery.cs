@@ -1,6 +1,6 @@
 using MediatR;
 
-namespace RelayController.Application.UseCases.Queries.UserBoardQueries;
+namespace RelayController.Application.UseCases.Queries.UserBoardQueries.HasPermission;
 
 public sealed record HasPermissionQuery : IRequest<bool>
 {

@@ -16,8 +16,4 @@
       <ProjectReference Include="..\RelayController.Infrastructure\RelayController.Infrastructure.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Controllers\UserBoard\AddUserToDevice\" />
-    </ItemGroup>
-
 </Project>

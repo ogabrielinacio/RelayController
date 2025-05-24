@@ -2,10 +2,12 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RelayController.API.Common;
+using RelayController.API.Controllers.Board.UpdateBoard;
 using RelayController.Application.UseCases.Commands.BoardCommands.ToggleEnable;
 using RelayController.Application.UseCases.Commands.BoardCommands.UpdateRelayControllerBoard;
 using RelayController.Application.UseCases.Queries.GetRelayControllerBoard;
 using RelayController.Application.UseCases.Queries.UserBoardQueries;
+using RelayController.Application.UseCases.Queries.UserBoardQueries.HasPermission;
 
 namespace RelayController.API.Controllers.Board;
 
@@ -85,19 +87,29 @@ public class BoardController(ISender sender) :  AppController
     }
     
     [HttpPut("update")]
-    public async Task<IActionResult> UpdateAsync([FromBody] UpdateRelayControllerBoardCommand command, CancellationToken cancellationToken)
+    public async Task<IActionResult> UpdateAsync([FromBody] UpdateBoardRequest request, CancellationToken cancellationToken)
     {
         var userId = GetCurrentUserId();
         var permissionQuery = new HasPermissionQuery
         {
             UserId = userId,
-            BoardId = command.Id
+            BoardId = request.Id
         };
         
         var hasPermission = await sender.Send(permissionQuery,cancellationToken);
         if (!hasPermission) {
             return BadRequest();
         }
+
+        var command = new UpdateRelayControllerBoardCommand
+        {
+           Id = request.Id,
+           IsEnable = request.IsEnable,
+           IsActive =  request.IsActive,
+           StartTime = request.StartTime,
+           EndTime = request.EndTime,
+           Repeat = request.Repeat,
+        };
         await sender.Send(command, cancellationToken);
         return Ok();
     }

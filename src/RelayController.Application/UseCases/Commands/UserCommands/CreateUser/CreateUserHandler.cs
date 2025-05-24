@@ -8,6 +8,13 @@ public class CreateUserHandler(IUserRepository userRepository, IUnitOfWork unitO
 {
    public async Task<CreateUserResponse> Handle(CreateUserCommand command, CancellationToken cancellationToken)
    {
+       var exisitingUser = await userRepository.GetByEmailAsync(command.Email, cancellationToken);
+       
+       if (exisitingUser != null)
+       {
+           throw new InvalidOperationException($"User with email {command.Email} already exists"); 
+       }
+       
        var user = new User(
            command.Name, 
            command.Email 

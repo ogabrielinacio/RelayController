@@ -7,4 +7,6 @@ public sealed record BecomeOwnerCommand : IRequest<bool>
    public Guid UserId { get; set; }
    
    public Guid BoardId { get; set; }
+   
+   public string CustomName { get; set; } = string.Empty;
 }
