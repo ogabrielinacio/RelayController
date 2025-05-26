@@ -10,6 +10,8 @@ public interface IUserRepository
    Task<OperationResult> AddAsync(User user, string rawPassword, CancellationToken cancellationToken);
 
    Task<bool> VerifyPasswordAsync(User user, string rawPassword, CancellationToken cancellationToken);
+   
+   Task ChangePasswordAsync(User user, string newPassword, CancellationToken cancellationToken);
 
    void Update(User user, CancellationToken cancellationToken);
    Task DeleteAsync(Guid id, CancellationToken cancellationToken);

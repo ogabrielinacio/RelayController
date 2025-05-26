@@ -15,7 +15,7 @@ public class AddUserHandler(IUserRepository userRepository ,IUserBoardsRolesRepo
         
         if (!hasOwnerPermission)
         {
-           throw new UnauthorizedAccessException("You do not have permission to add a user to this board."); 
+           throw new DomainForbiddenAccessException("Access denied: only board owners can add users."); 
         }
 
         if (command.RoleId == Role.Owner.Id)
@@ -27,7 +27,7 @@ public class AddUserHandler(IUserRepository userRepository ,IUserBoardsRolesRepo
        
         if (userExists is null)
         {
-            throw new InvalidOperationException($"User with email {command.Email} doesn't exists"); 
+            throw new DomainNotFoundException($"User with email {command.Email} doesn't exists"); 
         }
         
         var role = new UserBoardsRoles { 

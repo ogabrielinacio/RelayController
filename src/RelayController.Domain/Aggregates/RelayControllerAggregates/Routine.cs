@@ -1,0 +1,98 @@
+using RelayController.Domain.Common;
+using RelayController.Domain.Enums;
+using RelayController.Domain.ValueObjects;
+
+namespace RelayController.Domain.Aggregates.RelayControllerAggregates;
+
+public class Routine : AuditableEntity 
+{
+    public Guid RelayControllerBoardId { get; private set; }
+    public Time StartTime { get; private set; } = null!;
+    public Time? EndTime { get; private set; }
+    public Repeat Repeat { get; private set; }
+    public DayOfWeek? DayOfWeek { get; private set; }
+    public int? DayOfMonth { get; private set; }
+
+    protected Routine() { }
+
+    public Routine(Guid relayControllerBoardId, DateTime startTime, Repeat repeat, DateTime? endTime)
+    {
+        RelayControllerBoardId = relayControllerBoardId;
+        Repeat = repeat;
+
+        StartTime = new Time(startTime.Hour, startTime.Minute, startTime.Second);
+        EndTime = endTime is not null ? new Time(endTime.Value.Hour, endTime.Value.Minute, endTime.Value.Second) : null;
+
+        switch (repeat)
+        {
+            case Repeat.Weekly:
+                DayOfWeek = startTime.DayOfWeek;
+                break;
+            case Repeat.Monthly:
+                DayOfMonth = startTime.Day;
+                break;
+        }
+    }
+    public bool MustBeOn(DateTime currentDateTime)
+    {
+        return Repeat switch
+        {
+            Repeat.Daily => currentDateTime.TimeOfDay >= StartTime.ToTimeSpan(),
+            Repeat.Weekly => currentDateTime.DayOfWeek == DayOfWeek &&
+                             currentDateTime.TimeOfDay >= StartTime.ToTimeSpan(),
+            Repeat.Monthly => currentDateTime.Day == DayOfMonth && currentDateTime.TimeOfDay >= StartTime.ToTimeSpan(),
+            _ => false
+        };
+    }
+
+    public bool MustBeOff(DateTime currentDateTime)
+    {
+        if (EndTime is null) return false;
+
+        return currentDateTime.TimeOfDay >= EndTime.ToTimeSpan();
+    }
+
+    private void RepeatDaily(DateTime startTime)
+    {
+        StartTime = new Time(startTime.Hour, startTime.Minute, startTime.Second);
+        DayOfWeek = null;
+        DayOfMonth = null;
+    }
+
+    private void RepeatWeekly(DateTime startTime)
+    {
+        DayOfWeek = startTime.DayOfWeek;
+        StartTime = new Time(startTime.Hour, startTime.Minute, startTime.Second);
+        DayOfMonth = null;
+    }
+
+    private void RepeatMonthly(DateTime startTime)
+    {
+        DayOfMonth = startTime.Day;
+        StartTime = new Time(startTime.Hour, startTime.Minute, startTime.Second);
+        DayOfWeek = null;
+    }
+    
+    public bool ConflictsWith(Routine other)
+    {
+        if (Repeat != other.Repeat)
+            return false;
+
+        if (Repeat == Repeat.Daily || 
+            (Repeat == Repeat.Weekly && DayOfWeek == other.DayOfWeek) || 
+            (Repeat == Repeat.Monthly && DayOfMonth == other.DayOfMonth))
+        {
+            var thisStart = StartTime.ToTimeSpan();
+            var thisEnd = EndTime?.ToTimeSpan() ?? thisStart;
+
+            var otherStart = other.StartTime.ToTimeSpan();
+            var otherEnd = other.EndTime?.ToTimeSpan() ?? otherStart;
+
+            var overlap = thisStart < otherEnd && otherStart < thisEnd;
+            return overlap;
+        }
+
+        return false;
+    }
+
+}

@@ -4,8 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 using RelayController.API.Common;
 using RelayController.API.Controllers.UserBoard.AddUserToDevice;
 using RelayController.API.Controllers.UserBoard.BecomeOwner;
+using RelayController.API.Controllers.UserBoard.ChangeCustomName;
+using RelayController.API.Controllers.UserBoard.DeleteUserFromDevice;
 using RelayController.Application.UseCases.Commands.UserBoardCommands.AddUser;
 using RelayController.Application.UseCases.Commands.UserBoardCommands.BecomeOwner;
+using RelayController.Application.UseCases.Commands.UserBoardCommands.ChangeCustomName;
+using RelayController.Application.UseCases.Commands.UserBoardCommands.DeleteUserBoardRelationship;
+using RelayController.Application.UseCases.Commands.UserBoardCommands.DeleteUserFromDevice;
 using RelayController.Application.UseCases.Queries.UserBoardQueries.GetAllByUser;
 using RelayController.Application.UseCases.Queries.UserBoardQueries.HasSpecificPermission;
 
@@ -48,6 +53,57 @@ public class UserBoardController(ISender sender) : AppController
         
         var response = await sender.Send(command, cancellationToken);
 
+        return Ok(response);
+    }
+    
+    [HttpPost("rename")]
+    public async Task<IActionResult> ChangeCustomName([FromBody] ChangeCustomNameRequest  request, CancellationToken cancellationToken)
+    {
+        var userId = GetCurrentUserId();
+        
+        var command = new ChangeCustomNameCommand 
+        {
+            
+            RequestedUserId = userId,
+            BoardId = request.BoardId,
+            NewName = request.NewName,
+        };
+        
+        var response = await sender.Send(command, cancellationToken);
+
+        return Ok(response);
+    }
+
+    [HttpDelete("remove/{boardId:guid}")]
+    public async Task<IActionResult> RemoveRelationship([FromRoute] Guid boardId, CancellationToken cancellationToken)
+    {
+        
+        var userId = GetCurrentUserId();
+        var command = new DeleteUserBoardRelationshipCommand
+        {
+            UserId = userId,
+            BoardId = boardId
+        };
+        
+        var response = await sender.Send(command, cancellationToken);
+
+        return Ok(response);
+    }
+    
+    [HttpDelete("delete-user-from-device")]
+    public async Task<IActionResult> DeleteUserFromDevice([FromBody] DeleteUserFromDeviceRequest request, CancellationToken cancellationToken)
+    {
+        
+        var userId = GetCurrentUserId();
+        var command = new DeleteUserFromDeviceCommand  
+        {
+            UserId = userId,
+            BoardId = request.BoardId,
+            Email = request.Email,
+        };
+        
+        var response = await sender.Send(command, cancellationToken);
+    
         return Ok(response);
     }
     

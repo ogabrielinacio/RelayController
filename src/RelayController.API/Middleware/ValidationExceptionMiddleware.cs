@@ -24,6 +24,10 @@ namespace RelayController.API.Middleware
             {
                 await HandleValidationExceptionAsync(context, ex);
             }
+            catch (DomainForbiddenAccessException ex)
+            {
+                await HandleDomainExceptionAsync(context, ex, GetStatusCodeForDomainException(ex));
+            }
             catch (DomainException ex)
             {
                 await HandleDomainExceptionAsync(context, ex, GetStatusCodeForDomainException(ex));
@@ -38,13 +42,20 @@ namespace RelayController.API.Middleware
         {
             return ex switch
             {
-                DomainNotFoundException => StatusCodes.Status404NotFound,
+                DomainValidationException => StatusCodes.Status400BadRequest,
+                DomainRuleViolationException => StatusCodes.Status400BadRequest,
+
+                DomainUnauthorizedAccessException => StatusCodes.Status401Unauthorized,
+
                 DomainForbiddenAccessException => StatusCodes.Status403Forbidden,
-                DomainRuleViolationException => StatusCodes.Status409Conflict,
+
+                DomainNotFoundException => StatusCodes.Status404NotFound,
+
+                DomainConflictException => StatusCodes.Status409Conflict,
+
                 _ => StatusCodes.Status400BadRequest
             };
         }
-
 
         private static Task HandleValidationExceptionAsync(HttpContext context, ValidationException exception)
         {

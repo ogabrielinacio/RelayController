@@ -2,12 +2,14 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RelayController.API.Common;
-using RelayController.API.Controllers.Board.UpdateBoard;
+using RelayController.API.Controllers.Board.AddRoutine;
+using RelayController.Application.UseCases.Commands.BoardCommands.AddRoutine;
 using RelayController.Application.UseCases.Commands.BoardCommands.ToggleEnable;
 using RelayController.Application.UseCases.Commands.BoardCommands.UpdateRelayControllerBoard;
 using RelayController.Application.UseCases.Queries.GetRelayControllerBoard;
 using RelayController.Application.UseCases.Queries.UserBoardQueries;
 using RelayController.Application.UseCases.Queries.UserBoardQueries.HasPermission;
+using RelayController.Domain.Aggregates.RelayControllerAggregates;
 
 namespace RelayController.API.Controllers.Board;
 
@@ -27,7 +29,7 @@ public class BoardController(ISender sender) :  AppController
         var hasPermission = await sender.Send(permissionQuery,cancellationToken);
         if (!hasPermission)
         {
-            return BadRequest();
+            return Unauthorized();
         }
         
         var query = new GetRelayControllerBoardQuery()
@@ -50,7 +52,7 @@ public class BoardController(ISender sender) :  AppController
         var hasPermission = await sender.Send(permissionQuery,cancellationToken);
         if (!hasPermission)
         {
-            return BadRequest();
+            return Unauthorized();
         }
         
         var command = new ToggleEnableCommand
@@ -74,7 +76,7 @@ public class BoardController(ISender sender) :  AppController
         
         var hasPermission = await sender.Send(permissionQuery,cancellationToken);
         if (!hasPermission) {
-            return BadRequest();
+            return Unauthorized();
         }
         
         var command = new ToggleEnableCommand
@@ -86,8 +88,8 @@ public class BoardController(ISender sender) :  AppController
         return Ok();
     }
     
-    [HttpPut("update")]
-    public async Task<IActionResult> UpdateAsync([FromBody] UpdateBoardRequest request, CancellationToken cancellationToken)
+    [HttpPost("add-routine")]
+    public async Task<IActionResult> UpdateAsync([FromBody] AddRoutineRequest request, CancellationToken cancellationToken)
     {
         var userId = GetCurrentUserId();
         var permissionQuery = new HasPermissionQuery
@@ -101,14 +103,9 @@ public class BoardController(ISender sender) :  AppController
             return BadRequest();
         }
 
-        var command = new UpdateRelayControllerBoardCommand
+        var command = new AddRoutineCommand
         {
-           Id = request.Id,
-           IsEnable = request.IsEnable,
-           IsActive =  request.IsActive,
-           StartTime = request.StartTime,
-           EndTime = request.EndTime,
-           Repeat = request.Repeat,
+           Routine = new Routine(request.Id, request.StartTime, request.Repeat, request.EndTime)
         };
         await sender.Send(command, cancellationToken);
         return Ok();

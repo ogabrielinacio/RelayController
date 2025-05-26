@@ -12,6 +12,8 @@ namespace RelayController.Infrastructure.Context
 
         public DbSet<RelayControllerBoard> RelayControllerBoards => Set<RelayControllerBoard>();
         
+        public DbSet<Routine> Routines => Set<Routine>();
+
         public DbSet<UserBoardsRoles> UserBoardsRoles => Set<UserBoardsRoles>();
         public DbSet<User> Users => Set<User>();
         

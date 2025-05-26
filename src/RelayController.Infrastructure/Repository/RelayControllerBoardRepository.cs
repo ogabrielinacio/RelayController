@@ -15,12 +15,17 @@ public class RelayControllerBoardRepository : IRelayControllerBoardRepository
 
     public async Task<RelayControllerBoard?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
-        return await _context.RelayControllerBoards.FindAsync(id, cancellationToken);
+        return await _context.RelayControllerBoards
+            .Include(r => r.Routines) 
+            .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 
     public async Task<IEnumerable<RelayControllerBoard>> GetAllActiveAsync(CancellationToken cancellationToken)
     {
-        return await _context.RelayControllerBoards.Where(x => x.IsActive == true).ToListAsync(cancellationToken);
+        return await _context.RelayControllerBoards
+            .Include(r => r.Routines)
+            .Where(x => x.IsActive)
+            .ToListAsync(cancellationToken);
     }
     
     public async Task AddAsync(RelayControllerBoard controllerBoard, CancellationToken cancellationToken)

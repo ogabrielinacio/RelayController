@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using RelayController.Infrastructure.Context;
@@ -11,9 +12,11 @@ using RelayController.Infrastructure.Context;
 namespace RelayController.Infrastructure.Migrations
 {
     [DbContext(typeof(RelayControllerContext))]
-    partial class RelayControllerContextModelSnapshot : ModelSnapshot
+    [Migration("20250525184029_AddRoutines")]
+    partial class AddRoutines
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -111,7 +114,7 @@ namespace RelayController.Infrastructure.Migrations
 
                     b.Property<Guid>("RelayControllerBoardId")
                         .HasColumnType("uuid")
-                        .HasColumnName("relay_controller_board_id");
+                        .HasColumnName("relay_controller_id");
 
                     b.Property<DateTime?>("Updated")
                         .HasColumnType("timestamp with time zone")
@@ -125,12 +128,9 @@ namespace RelayController.Infrastructure.Migrations
 
                     b.HasIndex("Created");
 
-                    b.HasIndex("RelayControllerBoardId");
-
                     b.HasIndex("Updated");
 
-                    b.HasIndex("UserId", "RelayControllerBoardId")
-                        .IsUnique();
+                    b.HasIndex("UserId");
 
                     b.ToTable("user_boards_roles", (string)null);
                 });
@@ -244,12 +244,6 @@ namespace RelayController.Infrastructure.Migrations
 
             modelBuilder.Entity("RelayController.Domain.Aggregates.UserAggregates.Entities.UserBoardsRoles", b =>
                 {
-                    b.HasOne("RelayController.Domain.Aggregates.RelayControllerAggregates.RelayControllerBoard", null)
-                        .WithMany()
-                        .HasForeignKey("RelayControllerBoardId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("RelayController.Domain.Aggregates.UserAggregates.User", null)
                         .WithMany("DevicesRoles")
                         .HasForeignKey("UserId")

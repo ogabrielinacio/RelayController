@@ -1,6 +1,7 @@
-using System.Collections.Immutable;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using RelayController.Domain.Aggregates.RelayControllerAggregates;
+using RelayController.Domain.Aggregates.UserAggregates;
 using RelayController.Domain.Aggregates.UserAggregates.Entities;
 
 namespace RelayController.Infrastructure.Context.Configurations;
@@ -16,9 +17,13 @@ public class UserBoardsRolesConfiguration : IEntityTypeConfiguration<UserBoardsR
             .IsRequired();
         
         builder.Property(p => p.RelayControllerBoardId)
-            .HasColumnName("relay_controller_id")
+            .HasColumnName("relay_controller_board_id")
             .IsRequired();
         
+        builder.HasOne<RelayControllerBoard>() 
+            .WithMany()
+            .HasForeignKey(p => p.RelayControllerBoardId)
+            .OnDelete(DeleteBehavior.Cascade);
         
         builder.OwnsOne(p => p.Role, role =>
         {
@@ -30,6 +35,9 @@ public class UserBoardsRolesConfiguration : IEntityTypeConfiguration<UserBoardsR
                 .HasColumnName("role_name")
                 .IsRequired();
         });
+        
+        builder.HasIndex(p => new { p.UserId, p.RelayControllerBoardId }).IsUnique();
+        
         builder.ConfigureAuditableEntity();
     }
 }

@@ -12,6 +12,8 @@ public class GetRelayControllerBoardHandler(IRelayControllerBoardRepository rela
         var relayControllerBoard = await relayControllerBoardRepository.GetByIdAsync(request.Id, cancellationToken)
                      ?? throw new DomainNotFoundException("RelayControllerBoard was not found.");
 
-        return relayControllerBoard.ToGetRelayControllerBoardResponse();
+        var response =  relayControllerBoard.ToGetRelayControllerBoardResponse();
+        
+        return response;
     }
 }

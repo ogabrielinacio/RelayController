@@ -45,6 +45,13 @@ public class UserRepository : IUserRepository
         _context.Users.Update(user);
     }
 
+    public async Task ChangePasswordAsync(User user, string newPassword, CancellationToken cancellationToken)
+    {
+        _passwordHasher.CreatePasswordHash(newPassword, out var hash, out var salt);
+        user.SetPassword(hash, salt);
+        Update(user, cancellationToken);
+    }
+
     public async Task DeleteAsync(Guid id, CancellationToken cancellationToken)
     {
         var user = await GetByIdAsync(id,cancellationToken);

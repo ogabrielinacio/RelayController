@@ -1,6 +1,7 @@
 using RelayController.Domain.Aggregates.UserAggregates;
 using RelayController.Domain.Common;
 using MediatR;
+using RelayController.Domain.Exceptions;
 
 namespace RelayController.Application.UseCases.Commands.UserCommands.CreateUser;
 
@@ -12,7 +13,7 @@ public class CreateUserHandler(IUserRepository userRepository, IUnitOfWork unitO
        
        if (exisitingUser != null)
        {
-           throw new InvalidOperationException($"User with email {command.Email} already exists"); 
+           throw new DomainConflictException($"User with email {command.Email} already exists"); 
        }
        
        var user = new User(

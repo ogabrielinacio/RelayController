@@ -1,6 +1,5 @@
 ﻿using RelayController.Domain.Common;
 using RelayController.Domain.Enums;
-using RelayController.Domain.ValueObjects;
 
 namespace RelayController.Domain.Aggregates.RelayControllerAggregates;
 
@@ -8,11 +7,9 @@ public class RelayControllerBoard : AuditableEntity, IAggregateRoot
 {
     public bool IsActive { get; private set; }
     public bool IsEnable { get; private set; }
-    public Time StartTime { get; private set; } = null!;
-    public Time? EndTime { get; private set; }
-    public Repeat Repeat { get; private set; }
-    public DayOfWeek? DayOfWeek { get; private set; }
-    public int? DayOfMonth { get; private set; }
+    
+    private readonly List<Routine> _routines = new();
+    public IReadOnlyCollection<Routine> Routines => _routines;
     
     protected RelayControllerBoard() { }
     
@@ -44,6 +41,26 @@ public class RelayControllerBoard : AuditableEntity, IAggregateRoot
             Disable();
         }
     }
+    
+    public bool AddRoutine(Routine routine)
+    {
+        if (_routines.Any(r => r.ConflictsWith(routine)))
+            return false;
+        _routines.Add(routine);
+        return true;
+    }
+
+    public void RemoveRoutine(Guid routineId)
+    {
+        var routine = _routines.FirstOrDefault(r => r.Id == routineId);
+        if (routine is not null)
+            _routines.Remove(routine);
+    }
+    
+    public void ClearRoutines()
+    {
+        _routines.Clear();
+    }
 
     public void Enable()
     {
@@ -53,38 +70,9 @@ public class RelayControllerBoard : AuditableEntity, IAggregateRoot
     private void Enable(DateTime startTime, Repeat repeat, DateTime? endTime = null)
     {
         IsEnable = true;
-        Repeat = repeat;
 
-        if (endTime is not null)
-        {
-            var datetime = (DateTime)endTime;
-            EndTime = new Time(datetime.Hour, datetime.Minute, datetime.Second);
-        } else
-        {
-            EndTime = null;
-        }
-
-        switch (repeat)
-        {
-            case Repeat.Daily:
-                RepeatDaily(startTime);
-                break;
-
-            case Repeat.Weekly:
-                RepeatWeekly(startTime);
-                break;
-
-            case Repeat.Monthly:
-                RepeatMonthly(startTime);
-                break;
-
-            case Repeat.DoNoRepeat:
-            default:
-                StartTime = new Time(startTime.Hour, startTime.Minute, startTime.Second);
-                DayOfWeek = null;
-                DayOfMonth = null;
-                break;
-        }
+        var routine = new Routine(Id, startTime, repeat, endTime);
+        AddRoutine(routine);
     }
 
     public void Disable()
@@ -106,44 +94,13 @@ public class RelayControllerBoard : AuditableEntity, IAggregateRoot
     public bool MustBeOn(DateTime currentDateTime)
     {
         if (!IsActive || IsOff()) return false;
-
-        return Repeat switch
-        {
-            Repeat.Daily => currentDateTime.TimeOfDay >= StartTime.ToTimeSpan(),
-            Repeat.Weekly => currentDateTime.DayOfWeek == DayOfWeek &&
-                             currentDateTime.TimeOfDay >= StartTime.ToTimeSpan(),
-            Repeat.Monthly => currentDateTime.Day == DayOfMonth && currentDateTime.TimeOfDay >= StartTime.ToTimeSpan(),
-            _ => false
-        };
+        return _routines.Any(r => r.MustBeOn(currentDateTime));
     }
 
     public bool MustBeOff(DateTime currentDateTime)
     {
         if (!IsActive || IsOff()) return true;
 
-        if (EndTime is null) return false;
-
-        return currentDateTime.TimeOfDay >= EndTime.ToTimeSpan();
-    }
-
-    private void RepeatDaily(DateTime startTime)
-    {
-        StartTime = new Time(startTime.Hour, startTime.Minute, startTime.Second);
-        DayOfWeek = null;
-        DayOfMonth = null;
-    }
-
-    private void RepeatWeekly(DateTime startTime)
-    {
-        DayOfWeek = startTime.DayOfWeek;
-        StartTime = new Time(startTime.Hour, startTime.Minute, startTime.Second);
-        DayOfMonth = null;
-    }
-
-    private void RepeatMonthly(DateTime startTime)
-    {
-        DayOfMonth = startTime.Day;
-        StartTime = new Time(startTime.Hour, startTime.Minute, startTime.Second);
-        DayOfWeek = null;
+        return _routines.Any(r => r.MustBeOff(currentDateTime));
     }
 }

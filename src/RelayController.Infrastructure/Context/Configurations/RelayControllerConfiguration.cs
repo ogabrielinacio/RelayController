@@ -18,44 +18,12 @@ public class RelayControllerConfiguration : IEntityTypeConfiguration<RelayContro
             .HasColumnName("is_enable")
             .IsRequired();
         
-        builder.Property(b => b.Repeat)
-            .HasColumnName("repeat")
-            .HasConversion<string>()
-            .IsRequired();
+        builder.HasMany(b => b.Routines)
+            .WithOne() 
+            .HasForeignKey(r => r.RelayControllerBoardId)
+            .OnDelete(DeleteBehavior.Cascade);
 
-        builder.Property(b => b.DayOfWeek)
-            .HasColumnName("day_of_week")
-            .HasConversion<string>();
-
-        builder.Property(b => b.DayOfMonth)
-            .HasColumnName("day_of_month");
-        
-        builder.OwnsOne(b => b.StartTime, b =>
-        {
-            b.Property(p => p.Hour)
-                .HasColumnName("start_hour")
-                .IsRequired();
-
-            b.Property(p => p.Minute)
-                .HasColumnName("start_minute")
-                .IsRequired();
-
-            b.Property(p => p.Second)
-                .HasColumnName("start_second")
-                .IsRequired();
-        });
-
-        builder.OwnsOne(b => b.EndTime, b =>
-        {
-            b.Property(p => p.Hour)
-                .HasColumnName("end_hour");
-
-            b.Property(p => p.Minute)
-                .HasColumnName("end_minute");
-
-            b.Property(p => p.Second)
-                .HasColumnName("end_second");
-        });
+        builder.ConfigureAuditableEntity();
 
         builder.ConfigureAuditableEntity();
     }

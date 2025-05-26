@@ -15,6 +15,19 @@ public class UserBoardsRolesRepository : IUserBoardsRolesRepository
         _context = context;
     }
 
+    public async Task<UserBoardsRoles?> GetByUserIdAndBoardId(Guid userId, Guid boardId, CancellationToken cancellationToken)
+    {
+        return await _context.UserBoardsRoles
+            .FirstOrDefaultAsync(x => x.UserId == userId && x.RelayControllerBoardId == boardId, cancellationToken);
+    } 
+    
+    public async Task<List<UserBoardsRoles>> GetByBoardId(Guid boardId, CancellationToken cancellationToken)
+    {
+        return await _context.UserBoardsRoles
+            .Where(r => r.RelayControllerBoardId == boardId)
+            .ToListAsync(cancellationToken);
+    } 
+    
     public async Task AddAsync(UserBoardsRoles role, CancellationToken cancellationToken)
     {
         await _context.UserBoardsRoles.AddAsync(role, cancellationToken);
@@ -60,6 +73,12 @@ public class UserBoardsRolesRepository : IUserBoardsRolesRepository
             .Where(r => r.UserId == userId)
             .ToListAsync(cancellationToken);
     }
+    
+    public async Task UpdateAsync(UserBoardsRoles role, CancellationToken cancellationToken)
+    {
+        _context.UserBoardsRoles.Update(role);
+    }
+
     
     public async Task RemoveAsync(UserBoardsRoles role, CancellationToken cancellationToken)
     {
