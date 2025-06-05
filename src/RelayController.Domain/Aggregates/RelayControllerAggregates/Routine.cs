@@ -35,13 +35,12 @@ public class Routine : AuditableEntity
     }
     public bool MustBeOn(DateTime currentDateTime)
     {
+        bool IsWithinRange() =>currentDateTime.TimeOfDay >= StartTime.ToTimeSpan() && (EndTime is null || currentDateTime.TimeOfDay <= EndTime.ToTimeSpan()); 
         return Repeat switch
         {
-            Repeat.Daily => currentDateTime.TimeOfDay >= StartTime.ToTimeSpan(),
-            Repeat.Weekly => currentDateTime.DayOfWeek == DayOfWeek &&
-                             currentDateTime.TimeOfDay >= StartTime.ToTimeSpan(),
-            Repeat.Monthly => currentDateTime.Day == DayOfMonth && currentDateTime.TimeOfDay >= StartTime.ToTimeSpan(),
-            _ => false
+            Repeat.Weekly => currentDateTime.DayOfWeek == DayOfWeek &&  IsWithinRange(),
+            Repeat.Monthly => currentDateTime.Day == DayOfMonth && IsWithinRange(),
+            _ => IsWithinRange()
         };
     }
 

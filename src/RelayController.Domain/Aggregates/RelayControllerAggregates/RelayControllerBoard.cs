@@ -93,13 +93,13 @@ public class RelayControllerBoard : AuditableEntity, IAggregateRoot
 
     public bool MustBeOn(DateTime currentDateTime)
     {
-        if (!IsActive || IsOff()) return false;
+        if (!IsActive || IsEnable) return false;
         return _routines.Any(r => r.MustBeOn(currentDateTime));
     }
 
     public bool MustBeOff(DateTime currentDateTime)
     {
-        if (!IsActive || IsOff()) return true;
+        if (!IsActive || IsOff()) return false;
 
         return _routines.Any(r => r.MustBeOff(currentDateTime));
     }

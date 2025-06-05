@@ -9,12 +9,10 @@ namespace RelayController.Infrastructure.BackgroundServices;
 
 public class RelayControllerBackgroundService : BackgroundService
 {
-    private readonly ISender _sender;
     private readonly IServiceProvider _serviceProvider;
 
-    public RelayControllerBackgroundService(ISender sender, IServiceProvider serviceProvider)
+    public RelayControllerBackgroundService(IServiceProvider serviceProvider)
     {
-        _sender = sender;
         _serviceProvider = serviceProvider;
     }
 
@@ -27,6 +25,7 @@ public class RelayControllerBackgroundService : BackgroundService
                 using (var scope = _serviceProvider.CreateScope())
                 {
                     var relayControllerBoardRepository = scope.ServiceProvider.GetRequiredService<IRelayControllerBoardRepository>();
+                    var sender = scope.ServiceProvider.GetRequiredService<ISender>();
 
                     var relayControllerBoards = await relayControllerBoardRepository.GetAllActiveAsync(cancellationToken);
 
@@ -40,11 +39,11 @@ public class RelayControllerBackgroundService : BackgroundService
 
                         if (board.MustBeOn(datetime))
                         {
-                            await _sender.Send(command with { IsEnable = true }, cancellationToken);
+                            await sender.Send(command with { IsEnable = true }, cancellationToken);
                         }
                         else if (board.MustBeOff(datetime))
                         {
-                            await _sender.Send(command with { IsEnable = false }, cancellationToken);
+                            await sender.Send(command with { IsEnable = false }, cancellationToken);
                         }
                     }
                 }
