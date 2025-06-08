@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using RelayController.Application.UseCases.Commands.BoardCommands.RemoveExpiredRoutines;
 using RelayController.Application.UseCases.Commands.BoardCommands.ToggleEnable;
 using RelayController.Domain.Aggregates.RelayControllerAggregates;
 using RelayController.Domain.Messaging;
@@ -45,6 +46,12 @@ public class RelayControllerBackgroundService : BackgroundService
                         {
                             await sender.Send(command with { IsEnable = false }, cancellationToken);
                         }
+
+                        var removeExpiredRoutinesCommand = new RemoveExpiredRoutinesCommand
+                        {
+                            Id = board.Id
+                        };
+                        await sender.Send( removeExpiredRoutinesCommand, cancellationToken);
                     }
                 }
             }

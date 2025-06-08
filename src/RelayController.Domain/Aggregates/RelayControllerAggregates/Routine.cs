@@ -33,9 +33,16 @@ public class Routine : AuditableEntity
                 break;
         }
     }
-    public bool MustBeOn(DateTime currentDateTime)
+    public bool MustBeOnRoutine(DateTime currentDateTime)
     {
-        bool IsWithinRange() =>currentDateTime.TimeOfDay >= StartTime.ToTimeSpan() && (EndTime is null || currentDateTime.TimeOfDay <= EndTime.ToTimeSpan()); 
+        bool IsWithinRange()
+        {
+            var now = currentDateTime.TimeOfDay;
+
+            if (EndTime is null) return now >= StartTime.ToTimeSpan();
+            return now >= StartTime.ToTimeSpan() && now <= EndTime.ToTimeSpan();
+        }
+
         return Repeat switch
         {
             Repeat.Weekly => currentDateTime.DayOfWeek == DayOfWeek &&  IsWithinRange(),
@@ -44,7 +51,7 @@ public class Routine : AuditableEntity
         };
     }
 
-    public bool MustBeOff(DateTime currentDateTime)
+    public bool MustBeOffRoutine(DateTime currentDateTime)
     {
         if (EndTime is null) return false;
 
