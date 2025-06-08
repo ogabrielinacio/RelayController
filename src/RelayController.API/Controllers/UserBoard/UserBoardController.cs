@@ -34,7 +34,7 @@ public class UserBoardController(ISender sender) : AppController
         
         var response = await sender.Send(command, cancellationToken);
 
-        return Ok(response);
+        return Ok("you are now the owner of this board");
     }
     
     [HttpPost("add-user")]
@@ -53,7 +53,7 @@ public class UserBoardController(ISender sender) : AppController
         
         var response = await sender.Send(command, cancellationToken);
 
-        return Ok(response);
+        return Ok("user added");
     }
     
     [HttpPut("rename")]
@@ -71,7 +71,7 @@ public class UserBoardController(ISender sender) : AppController
         
         var response = await sender.Send(command, cancellationToken);
 
-        return Ok(response);
+        return Ok("custom name renamed");
     }
 
     [HttpDelete("remove/{boardId:guid}")]
@@ -87,7 +87,7 @@ public class UserBoardController(ISender sender) : AppController
         
         var response = await sender.Send(command, cancellationToken);
 
-        return Ok(response);
+        return Ok("user relationship removed");
     }
     
     [HttpDelete("delete-user-from-device")]
@@ -104,7 +104,7 @@ public class UserBoardController(ISender sender) : AppController
         
         var response = await sender.Send(command, cancellationToken);
     
-        return Ok(response);
+        return Ok("user removed from device");
     }
     
     [HttpGet("get-all")]

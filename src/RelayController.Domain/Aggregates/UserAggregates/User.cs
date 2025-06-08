@@ -1,7 +1,9 @@
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using RelayController.Domain.Aggregates.UserAggregates.Entities;
 using RelayController.Domain.Common;
+using RelayController.Domain.Exceptions;
 using RelayController.Domain.ValueObjects;
 
 namespace RelayController.Domain.Aggregates.UserAggregates;
@@ -29,14 +31,34 @@ public class User : AuditableEntity, IAggregateRoot
     {
         PasswordHash = newHash;
         PasswordSalt = newSalt;
-    }    
+    }
+    
+    public void UpdateName(string newName)
+    {
+        if (string.IsNullOrWhiteSpace(newName))
+            throw new DomainValidationException("Name cannot be empty.");
+
+        Name = newName;
+    }
+
+    public void UpdateEmail(string newEmail)
+    {
+        if (string.IsNullOrWhiteSpace(newEmail))
+            throw new DomainValidationException("Email cannot be empty.");
+        
+        var emailRegex = new Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", RegexOptions.Compiled);
+        if (!emailRegex.IsMatch(newEmail))
+            throw new DomainValidationException("Email format is invalid.");
+    
+        Email = newEmail;
+    }
     
     public void BecomeOwner(Guid boardId, Guid? newUserId = null)
     {
         Guid userId = newUserId ?? Id;
 
         if (_devicesRoles.Any(r => r.RelayControllerBoardId == boardId && r.Role == Role.Owner))
-            throw new InvalidOperationException("This device already has an owner.");
+            throw new DomainConflictException("This device already has an owner.");
 
         if (IsOwner(userId, boardId))
             return;
@@ -54,7 +76,7 @@ public class User : AuditableEntity, IAggregateRoot
         return _devicesRoles.Any(u =>
             u.UserId == userId &&
             u.RelayControllerBoardId == boardId &&
-            u.Role == Role.Owner);
+            u.Role.Id == Role.Owner.Id);
     }
 
     public void RevokeOwner(Guid userId, Guid boardId)
@@ -71,7 +93,7 @@ public class User : AuditableEntity, IAggregateRoot
     public void ChangeOwner(Guid ownerId, Guid newOwnerId, Guid boardId)
     {
         if (!IsOwner(ownerId, boardId))
-            throw new InvalidOperationException("Only the current owner can transfer ownership.");
+            throw new DomainForbiddenAccessException("Only the current owner can transfer ownership.");
 
         RevokeOwner(ownerId, boardId);
         BecomeOwner(boardId, newOwnerId);
@@ -80,7 +102,7 @@ public class User : AuditableEntity, IAggregateRoot
     public void AssignUser(Guid userId, Role role, Guid boardId)
     {
         if (!IsOwner(Id, boardId))
-            throw new InvalidOperationException("You're not allowed to assign a user to this board.");
+            throw new DomainForbiddenAccessException("You're not allowed to assign a user to this board.");
 
         if (_devicesRoles.Any(r => r.UserId == userId && r.RelayControllerBoardId == boardId))
             return;
