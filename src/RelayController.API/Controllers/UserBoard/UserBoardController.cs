@@ -56,7 +56,7 @@ public class UserBoardController(ISender sender) : AppController
         return Ok(response);
     }
     
-    [HttpPost("rename")]
+    [HttpPut("rename")]
     public async Task<IActionResult> ChangeCustomName([FromBody] ChangeCustomNameRequest  request, CancellationToken cancellationToken)
     {
         var userId = GetCurrentUserId();
