@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RelayController.API.Common;
 using RelayController.API.Controllers.Board.AddRoutine;
+using RelayController.API.Controllers.Board.DeleteRoutine;
 using RelayController.Application.UseCases.Commands.BoardCommands.AddRoutine;
+using RelayController.Application.UseCases.Commands.BoardCommands.DeleteRoutine;
 using RelayController.Application.UseCases.Commands.BoardCommands.ToggleEnable;
 using RelayController.Application.UseCases.Commands.BoardCommands.UpdateRelayControllerBoard;
 using RelayController.Application.UseCases.Queries.GetRelayControllerBoard;
@@ -90,7 +92,7 @@ public class BoardController(ISender sender) :  AppController
     }
     
     [HttpPost("add-routine")]
-    public async Task<IActionResult> UpdateAsync([FromBody] AddRoutineRequest request, CancellationToken cancellationToken)
+    public async Task<IActionResult> AddRoutine([FromBody] AddRoutineRequest request, CancellationToken cancellationToken)
     {
         var userId = GetCurrentUserId();
         var permissionQuery = new HasPermissionQuery
@@ -111,4 +113,30 @@ public class BoardController(ISender sender) :  AppController
         await sender.Send(command, cancellationToken);
         return Ok();
     }
+    
+    [HttpDelete("delete-routine")]
+    public async Task<IActionResult> DeleteRoutine([FromBody] DeleteRoutineRequest request, CancellationToken cancellationToken)
+    {
+        var userId = GetCurrentUserId();
+        var permissionQuery = new HasPermissionQuery
+        {
+            UserId = userId,
+            BoardId = request.BoardId
+        };
+        
+        var hasPermission = await sender.Send(permissionQuery,cancellationToken);
+        if (!hasPermission) {
+            return BadRequest();
+        }
+
+        var command = new DeleteRoutineCommand
+        {
+            BoardId = request.BoardId,
+            RoutineId = request.RoutineId
+        };
+        await sender.Send(command, cancellationToken);
+        return Ok();
+    }
+    
+    
 }

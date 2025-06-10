@@ -1,5 +1,6 @@
 ﻿using RelayController.Domain.Common;
 using RelayController.Domain.Enums;
+using RelayController.Domain.ValueObjects;
 
 namespace RelayController.Domain.Aggregates.RelayControllerAggregates;
 
@@ -42,6 +43,11 @@ public class RelayControllerBoard : AuditableEntity, IAggregateRoot
         }
     }
     
+    public Routine? GetRoutineById(Guid routineId)
+    {
+       return _routines.FirstOrDefault(r => r.Id == routineId);
+    } 
+    
     public bool AddRoutine(Routine routine)
     {
         if (_routines.Any(r => r.ConflictsWith(routine)))
@@ -50,11 +56,15 @@ public class RelayControllerBoard : AuditableEntity, IAggregateRoot
         return true;
     }
 
-    public void RemoveRoutine(Guid routineId)
+    public bool RemoveRoutine(Guid routineId)
     {
-        var routine = _routines.FirstOrDefault(r => r.Id == routineId);
-        if (routine is not null)
-            _routines.Remove(routine);
+        var routine =  GetRoutineById(routineId);
+        if (routine is null)
+            return false;
+        
+        _routines.Remove(routine);
+        return true;
+
     }
     
     public void ClearRoutines()
