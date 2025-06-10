@@ -12,6 +12,8 @@ public class User : AuditableEntity, IAggregateRoot
     public string Name { get; private set; }
     public string Email { get; private set; }
     
+    public bool EmailConfirmed { get; set; } = false;
+    
     public byte[] PasswordHash { get; private set; }
     
     public byte[] PasswordSalt { get; private set; }
@@ -49,9 +51,12 @@ public class User : AuditableEntity, IAggregateRoot
         var emailRegex = new Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", RegexOptions.Compiled);
         if (!emailRegex.IsMatch(newEmail))
             throw new DomainValidationException("Email format is invalid.");
-    
+
+        EmailConfirmed = false;
         Email = newEmail;
     }
+
+    public void ConfirmEmail() => EmailConfirmed = true;
     
     public void BecomeOwner(Guid boardId, Guid? newUserId = null)
     {

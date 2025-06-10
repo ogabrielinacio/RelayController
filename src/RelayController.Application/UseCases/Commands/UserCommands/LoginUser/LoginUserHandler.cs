@@ -1,6 +1,7 @@
 using MediatR;
 using RelayController.Domain.Aggregates.UserAggregates;
 using RelayController.Domain.Common;
+using RelayController.Domain.Enums;
 using RelayController.Domain.Exceptions;
 
 namespace RelayController.Application.UseCases.Commands.UserCommands.LoginUser;
@@ -25,12 +26,14 @@ public class LoginUserHandler : IRequestHandler<LoginUserCommand,LoginUserRespon
        var user = await _userRepository.GetByEmailAsync(command.Email, cancellationToken);
        if (user is null)
            throw new DomainForbiddenAccessException("Invalid email or password.");
+       
+       if(user.EmailConfirmed is not true) throw new DomainUnauthorizedAccessException("Email is not confirmed.");
 
        var isPasswordValid = await _userRepository.VerifyPasswordAsync(user, command.Password, cancellationToken);
        if (!isPasswordValid)
            throw new DomainForbiddenAccessException("Invalid email or password.");
 
-       var token = _jwtTokenGenerator.GenerateToken(user);
+       var token = _jwtTokenGenerator.GenerateToken(user, TokenPurpose.Authentication);
 
        return new LoginUserResponse(token);
 

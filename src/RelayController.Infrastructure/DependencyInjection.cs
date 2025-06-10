@@ -7,6 +7,7 @@ using RelayController.Domain.Aggregates.UserAggregates;
 using RelayController.Domain.Common;
 using RelayController.Domain.Messaging;
 using RelayController.Infrastructure.BackgroundServices;
+using RelayController.Infrastructure.Email;
 using RelayController.Infrastructure.Messaging;
 using RelayController.Infrastructure.Security;
 
@@ -20,6 +21,7 @@ public static class DependencyInjection
         services.AddRepositories();
         services.AddEfCore(configuration);
         services.AddSecurityAuthentication(configuration);
+        services.AddEmail(configuration);
         services.AddMessageBus(configuration);
         services.AddBackgroundService(); 
         return services;

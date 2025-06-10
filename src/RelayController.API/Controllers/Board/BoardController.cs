@@ -10,10 +10,11 @@ using RelayController.Application.UseCases.Queries.GetRelayControllerBoard;
 using RelayController.Application.UseCases.Queries.UserBoardQueries;
 using RelayController.Application.UseCases.Queries.UserBoardQueries.HasPermission;
 using RelayController.Domain.Aggregates.RelayControllerAggregates;
+using RelayController.Infrastructure.Security;
 
 namespace RelayController.API.Controllers.Board;
 
-[Authorize]
+[Authorize(Policy = AuthorizationPolicies.RequireAuthentication)]
 [Route("relay-controller")]
 public class BoardController(ISender sender) :  AppController
 {

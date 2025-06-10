@@ -13,10 +13,11 @@ using RelayController.Application.UseCases.Commands.UserBoardCommands.DeleteUser
 using RelayController.Application.UseCases.Commands.UserBoardCommands.DeleteUserFromDevice;
 using RelayController.Application.UseCases.Queries.UserBoardQueries.GetAllByUser;
 using RelayController.Application.UseCases.Queries.UserBoardQueries.HasSpecificPermission;
+using RelayController.Infrastructure.Security;
 
 namespace RelayController.API.Controllers.UserBoard;
 
-[Authorize]
+[Authorize(Policy = AuthorizationPolicies.RequireAuthentication)]
 [Route("user-board")]
 public class UserBoardController(ISender sender) : AppController
 {

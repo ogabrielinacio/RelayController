@@ -19,6 +19,10 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(u => u.Email)
             .HasColumnName("email")
             .IsRequired();
+        
+        builder.Property(u => u.EmailConfirmed)
+            .HasColumnName("email_confirmed")
+            .IsRequired();
 
         builder.Property(u => u.PasswordHash)
             .HasColumnName("password_hash")

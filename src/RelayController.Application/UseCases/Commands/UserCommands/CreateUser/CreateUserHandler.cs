@@ -1,6 +1,7 @@
 using RelayController.Domain.Aggregates.UserAggregates;
 using RelayController.Domain.Common;
 using MediatR;
+using RelayController.Domain.Enums;
 using RelayController.Domain.Exceptions;
 
 namespace RelayController.Application.UseCases.Commands.UserCommands.CreateUser;

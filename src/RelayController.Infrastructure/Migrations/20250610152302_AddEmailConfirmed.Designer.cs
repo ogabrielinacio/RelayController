@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using RelayController.Infrastructure.Context;
@@ -11,9 +12,11 @@ using RelayController.Infrastructure.Context;
 namespace RelayController.Infrastructure.Migrations
 {
     [DbContext(typeof(RelayControllerContext))]
-    partial class RelayControllerContextModelSnapshot : ModelSnapshot
+    [Migration("20250610152302_AddEmailConfirmed")]
+    partial class AddEmailConfirmed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using RelayController.Domain.Common;
 using RelayController.Infrastructure.Security.Configurations;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using RelayController.Domain.Enums;
 
 
 namespace RelayController.Infrastructure.Security;
@@ -40,6 +41,17 @@ public static class DependencyInjection
                    ClockSkew = TimeSpan.Zero
                };
            });
+       services.AddAuthorization(options =>
+       {
+           options.AddPolicy(AuthorizationPolicies.RequireConfirmEmail, policy =>
+               policy.RequireClaim("purpose", TokenPurpose.ConfirmEmail.ToString()));
+
+           options.AddPolicy(AuthorizationPolicies.RequireResetPassword, policy =>
+               policy.RequireClaim("purpose", TokenPurpose.ResetPassword.ToString()));
+
+           options.AddPolicy(AuthorizationPolicies.RequireAuthentication, policy =>
+               policy.RequireClaim("purpose", TokenPurpose.Authentication.ToString()));
+       });
 
        services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 
