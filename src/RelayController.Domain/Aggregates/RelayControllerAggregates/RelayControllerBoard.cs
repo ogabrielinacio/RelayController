@@ -101,22 +101,31 @@ public class RelayControllerBoard : AuditableEntity, IAggregateRoot
     }
     private bool IsOff() => !IsEnable;
 
+    private bool IsMustBeOnRoutine(DateTime currentDateTime)
+    {
+       var activeRoutine =  _routines
+            .Where(r => r.MustBeOnRoutine(currentDateTime))
+            .OrderByDescending(r => r.Created)
+            .FirstOrDefault();
+        
+        return activeRoutine is not null;
+    }
+
     public bool MustBeOn(DateTime currentDateTime)
     {
         if (!IsActive || IsEnable) return false;
-        var activeRoutines = _routines
-                .Where(r => r.MustBeOnRoutine(currentDateTime))
-                .OrderByDescending(r => r.Created)
-                .FirstOrDefault();
-        
-        return _routines.Any(r => r.MustBeOnRoutine(currentDateTime));
+        return IsMustBeOnRoutine(currentDateTime);
     }
 
     public bool MustBeOff(DateTime currentDateTime)
     {
-        if (!IsActive || IsOff()) return false;
-
-        return _routines.Any(r => r.MustBeOffRoutine(currentDateTime));
+        if (!IsActive || IsOff() || IsMustBeOnRoutine(currentDateTime)) return false;
+        
+        var activeRoutines = _routines
+            .Where(r => r.MustBeOffRoutine(currentDateTime))
+            .OrderByDescending(r => r.Created)
+            .FirstOrDefault();
+        return activeRoutines is not null;
     }
     
     public void RemoveExpiredRoutines(DateTime currentTime)

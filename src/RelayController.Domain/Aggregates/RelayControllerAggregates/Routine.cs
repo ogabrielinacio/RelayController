@@ -55,7 +55,12 @@ public class Routine : AuditableEntity
     {
         if (EndTime is null) return false;
 
-        return currentDateTime.TimeOfDay >= EndTime.ToTimeSpan();
+        var off = currentDateTime.TimeOfDay >= EndTime.ToTimeSpan();
+        return Repeat switch {
+            Repeat.Weekly =>  currentDateTime.DayOfWeek == DayOfWeek && off,
+            Repeat.Monthly =>  currentDateTime.Day == DayOfMonth && off,
+            _ => off
+        };
     }
 
     private void RepeatDaily(DateTime startTime)
