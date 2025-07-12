@@ -9,6 +9,7 @@ public sealed class GetRelayControllerBoardResponse
     public Guid Id { get; init; }
     public bool IsActive { get; init; }
     public bool IsEnable { get; init; }
+    public Mode Mode { get; init; }
     public List<RoutineResponse> Routines { get; init; } = [];
 }
 
@@ -20,4 +21,5 @@ public sealed class RoutineResponse
     public Repeat Repeat { get; init; }
     public DayOfWeek? DayOfWeek { get; init; }
     public int? DayOfMonth { get; init; }
+    public bool IsActive { get; init; }
 }

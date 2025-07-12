@@ -9,6 +9,8 @@ public class RelayControllerBoard : AuditableEntity, IAggregateRoot
     public bool IsActive { get; private set; }
     public bool IsEnable { get; private set; }
     
+    public Mode Mode { get; private set; } = Mode.Auto;
+    
     private readonly List<Routine> _routines = new();
     public IReadOnlyCollection<Routine> Routines => _routines;
     
@@ -66,6 +68,34 @@ public class RelayControllerBoard : AuditableEntity, IAggregateRoot
         return true;
 
     }
+
+    public bool DeactivateRoutine(Guid routineId)
+    {
+       var routine = GetRoutineById(routineId);
+       if(routine is null)
+           return false;
+       routine.Deactivate();
+       return true;
+    }
+    
+    public bool ActivateRoutine(Guid routineId)
+    {
+       var routine = GetRoutineById(routineId);
+       if(routine is null)
+           return false;
+       routine.Active();
+       return true;
+    }
+
+    public void ActivateManualMode()
+    {
+        Mode = Mode.Manual;
+    }
+    
+    public void ActivateAutoMode()
+    {
+        Mode = Mode.Auto;
+    }
     
     public void ClearRoutines()
     {
@@ -113,13 +143,13 @@ public class RelayControllerBoard : AuditableEntity, IAggregateRoot
 
     public bool MustBeOn(DateTime currentDateTime)
     {
-        if (!IsActive || IsEnable) return false;
+        if (!IsActive || IsEnable || Mode == Mode.Manual) return false;
         return IsMustBeOnRoutine(currentDateTime);
     }
 
     public bool MustBeOff(DateTime currentDateTime)
     {
-        if (!IsActive || IsOff() || IsMustBeOnRoutine(currentDateTime)) return false;
+        if (!IsActive || IsOff() || IsMustBeOnRoutine(currentDateTime) || Mode == Mode.Manual) return false;
         
         var activeRoutines = _routines
             .Where(r => r.MustBeOffRoutine(currentDateTime))

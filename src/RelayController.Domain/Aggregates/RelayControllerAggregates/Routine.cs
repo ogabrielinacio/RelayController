@@ -12,6 +12,7 @@ public class Routine : AuditableEntity
     public Repeat Repeat { get; private set; }
     public DayOfWeek? DayOfWeek { get; private set; }
     public int? DayOfMonth { get; private set; }
+    public bool IsActive { get; private set; } = true;
 
     protected Routine() { }
 
@@ -43,6 +44,8 @@ public class Routine : AuditableEntity
             return now >= StartTime.ToTimeSpan() && now <= EndTime.ToTimeSpan();
         }
 
+        if (!IsActive) return false;
+        
         return Repeat switch
         {
             Repeat.Weekly => currentDateTime.DayOfWeek == DayOfWeek &&  IsWithinRange(),
@@ -53,6 +56,8 @@ public class Routine : AuditableEntity
 
     public bool MustBeOffRoutine(DateTime currentDateTime)
     {
+        if (!IsActive) return false;
+        
         if (EndTime is null) return false;
 
         var off = currentDateTime.TimeOfDay >= EndTime.ToTimeSpan();
@@ -61,6 +66,16 @@ public class Routine : AuditableEntity
             Repeat.Monthly =>  currentDateTime.Day == DayOfMonth && off,
             _ => off
         };
+    }
+    
+    public void Active()
+    {
+        IsActive = true;
+    }
+
+    public void Deactivate()
+    {
+        IsActive = false;
     }
 
     private void RepeatDaily(DateTime startTime)

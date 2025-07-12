@@ -43,6 +43,11 @@ public class RoutineConfiguration : IEntityTypeConfiguration<Routine>
                 .HasColumnName("start_second")
                 .IsRequired();
         });
+        
+        builder.Property(b => b.IsActive)
+            .HasColumnName("is_active")
+            .HasDefaultValue(true)
+            .IsRequired();
 
         builder.OwnsOne(r => r.EndTime, b =>
         {

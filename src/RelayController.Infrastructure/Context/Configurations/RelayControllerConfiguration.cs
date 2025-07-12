@@ -1,6 +1,7 @@
 ﻿using RelayController.Domain.Aggregates.RelayControllerAggregates;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using RelayController.Domain.Enums;
 
 namespace RelayController.Infrastructure.Context.Configurations;
 
@@ -16,6 +17,12 @@ public class RelayControllerConfiguration : IEntityTypeConfiguration<RelayContro
         
         builder.Property(b => b.IsEnable)
             .HasColumnName("is_enable")
+            .IsRequired();
+        
+        builder.Property(r => r.Mode)
+            .HasColumnName("mode")
+            .HasConversion<string>()
+            .HasDefaultValue(Mode.Auto)
             .IsRequired();
         
         builder.HasMany(b => b.Routines)
