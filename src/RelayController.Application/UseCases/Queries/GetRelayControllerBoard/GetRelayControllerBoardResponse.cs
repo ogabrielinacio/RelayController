@@ -14,6 +14,7 @@ public sealed class GetRelayControllerBoardResponse
     public List<RoutineResponse> Routines { get; init; } = [];
 
     public DateTime? UpdatedAt { get; init; }
+    public DateTime? PowerStateChangedAt { get; init; }
 }
 
 public sealed class RoutineResponse
@@ -28,6 +29,4 @@ public sealed class RoutineResponse
     public int? DayOfMonth { get; init; }
 
     public bool IsActive { get; init; }
-
-    public DateTime? UpdatedAt { get; init; }
 }

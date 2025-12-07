@@ -19,6 +19,10 @@ public class RelayControllerConfiguration : IEntityTypeConfiguration<RelayContro
             .HasColumnName("is_enable")
             .IsRequired();
         
+        builder.Property(b => b.PowerStateChangedAt)
+            .HasColumnName("power_state_changed_at");
+ 
+        
         builder.Property(r => r.Mode)
             .HasColumnName("mode")
             .HasConversion<string>()

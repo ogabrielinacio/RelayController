@@ -6,12 +6,13 @@ using Riok.Mapperly.Abstractions;
 
 namespace RelayController.Application.UseCases.Queries.GetRelayControllerBoard;
 
+
 [Mapper]
 public static partial class GetRelayControllerBoardMapper
 {
     [MapProperty(
-        source: nameof(RelayControllerBoard.Updated),
-        target: nameof(GetRelayControllerBoardResponse.UpdatedAt)
+        source: nameof(RelayControllerBoard.PowerStateChangedAt),
+        target: nameof(GetRelayControllerBoardResponse.PowerStateChangedAt)
     )]
     public static partial GetRelayControllerBoardResponse ToGetRelayControllerBoardResponse(
         this RelayControllerBoard board
@@ -31,7 +32,6 @@ public static partial class GetRelayControllerBoardMapper
                 DayOfWeek = r.DayOfWeek,
                 DayOfMonth = r.DayOfMonth,
                 IsActive = r.IsActive,
-                UpdatedAt = r.Updated
             })
             .ToList();
     }

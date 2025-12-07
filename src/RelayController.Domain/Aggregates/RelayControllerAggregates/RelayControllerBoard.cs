@@ -9,6 +9,8 @@ public class RelayControllerBoard : AuditableEntity, IAggregateRoot
     public bool IsActive { get; private set; }
     public bool IsEnable { get; private set; }
     
+    public DateTime? PowerStateChangedAt { get; private set; }
+    
     public Mode Mode { get; private set; } = Mode.Auto;
     
     private readonly List<Routine> _routines = new();
@@ -19,6 +21,8 @@ public class RelayControllerBoard : AuditableEntity, IAggregateRoot
     public RelayControllerBoard(bool isActive, bool isEnable, DateTime startTime, Repeat repeat, DateTime? endTime)
     {
         IsActive = isActive;
+        
+        PowerStateChangedAt = DateTime.UtcNow;
 
         if (isEnable && isActive)
         {
@@ -106,11 +110,13 @@ public class RelayControllerBoard : AuditableEntity, IAggregateRoot
     public void Enable()
     {
         IsEnable = true;
+        PowerStateChangedAt = DateTime.UtcNow;
     }
 
     private void Enable(DateTime startTime, Repeat repeat, DateTime? endTime = null)
     {
         IsEnable = true;
+        PowerStateChangedAt = DateTime.UtcNow;
 
         var routine = new Routine(Id, startTime, repeat, endTime);
         AddRoutine(routine);
@@ -119,6 +125,7 @@ public class RelayControllerBoard : AuditableEntity, IAggregateRoot
     public void Disable()
     {
         IsEnable = false;
+        PowerStateChangedAt = DateTime.UtcNow;
     }
 
     public void Active()
