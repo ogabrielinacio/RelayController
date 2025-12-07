@@ -52,8 +52,9 @@ public class RelayControllerBoard : AuditableEntity, IAggregateRoot
     
     public bool AddRoutine(Routine routine)
     {
-        if (_routines.Any(r => r.ConflictsWith(routine)))
+        if (_routines.Any(r => r.IsActive && routine.IsActive && r.ConflictsWith(routine)))
             return false;
+
         _routines.Add(routine);
         return true;
     }

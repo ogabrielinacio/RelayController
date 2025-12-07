@@ -101,6 +101,9 @@ public class Routine : AuditableEntity
     
     public bool ConflictsWith(Routine other)
     {
+        if (!IsActive || !other.IsActive)
+            return false;
+        
         if (Repeat != other.Repeat)
             return false;
 
